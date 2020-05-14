@@ -66,6 +66,10 @@ cmake -E chdir build \
   --config ${build_type} \
   -- -j8
 
+
 # run unit tests
-cmake -E chdir build cmake -E time cmake --build . --config ${build_type} --target run_all_tests
+cmake -E chdir build \
+  cmake -E time cmake --build . \
+  --config ${build_type} \
+  --target run_all_tests
 ```

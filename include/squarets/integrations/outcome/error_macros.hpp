@@ -13,6 +13,9 @@
 #define __OUTCOME_DECLARE_MAKE_ERROR_CODE(Enum) \
   std::error_code make_error_code(Enum e);
 
+// std::is_error_code_enum tells the C++ STL
+// metaprogramming that enum
+// is registered with the standard error code system
 /// MUST BE EXECUTED A FILE LEVEL (no namespace) in HPP
 // ns - fully qualified enum namespace.
 // Enum - enum name. Example: EncodeError
@@ -24,6 +27,9 @@
   template <>                                 \
   struct std::is_error_code_enum<ns::Enum> : std::true_type {};
 
+// std::is_error_code_enum tells the C++ STL
+// metaprogramming that enum
+// is registered with the standard error code system
 /// MUST BE EXECUTED A FILE LEVEL (global namespace) in HPP
 // Enum - enum name. Example: EncodeError
 #define OUTCOME_HPP_DECLARE_ERROR_1(Enum) \
@@ -70,6 +76,7 @@
                 OUTCOME_CPP_DEFINE_CATEGORY_2)              \
   (__VA_ARGS__)
 
+//see https://www.boost.org/doc/libs/master/libs/outcome/doc/html/tutorial/advanced/payload/copy_file2.html
 #define OUTCOME_HPP_DECLARE_ERROR_EXTRA_INFO(namespacename, extrainfoname)                    \
   namespace namespacename { \
     inline const std::error_code make_error_code(const extrainfoname &fi) { \
@@ -82,6 +89,8 @@
     } \
   }
 
+// Define a custom error code category.
+// categorytype must be derived from std::error_category
 #define OUTCOME_HPP_DECLARE_CATEGORY_NAME(categorytype, categoryname)                    \
   namespace error_utils { \
     template <> \

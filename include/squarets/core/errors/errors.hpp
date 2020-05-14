@@ -21,7 +21,8 @@ enum class GeneratorError {
 };
 
 // Error code + data related to a failure.
-// Also causes ADL discovery to check this namespace.
+// Also causes Argument Dependent Lookup (ADL) discovery to check this namespace.
+// see https://www.boost.org/doc/libs/master/libs/outcome/doc/html/tutorial/advanced/payload.html
 struct GeneratorErrorExtraInfo
 {
   GeneratorError ec;

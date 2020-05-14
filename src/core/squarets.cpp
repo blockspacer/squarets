@@ -205,18 +205,28 @@ static outcome::result<void, GeneratorErrorExtraInfo>
 
 } // namespace
 
+Generator::Generator()
+{
+  output_var_name_ = kOutVarName;
+}
+
+Generator::Generator(const std::string& output_var_name)
+{
+  output_var_name_ = output_var_name;
+}
+
 outcome::result<std::string, GeneratorErrorExtraInfo>
   Generator::generate_from_ASCII(const char* template_source) noexcept
 {
   DCHECK(base::IsStringASCII(template_source));
-  original_str = base::ASCIIToUTF16(template_source);
+  original_str_ = base::ASCIIToUTF16(template_source);
   return generateFromString();
 }
 
 outcome::result<std::string, GeneratorErrorExtraInfo>
   Generator::generate_from_UTF16(base::StringPiece16 template_source) noexcept
 {
-  original_str = template_source.as_string();
+  original_str_ = template_source.as_string();
   return generateFromString();
 }
 
@@ -250,7 +260,7 @@ outcome::result<
     /// (checks only for tag pairs because of performance reasons)
     return GeneratorErrorExtraInfo{
       GeneratorError::UNCLOSED_TAG,
-      ErrorDetails::UnclosedTag(original_str, curPos,
+      ErrorDetails::UnclosedTag(original_str_, curPos,
         startTag, closeTag)};
   }
 
@@ -274,7 +284,7 @@ outcome::result<std::string, GeneratorErrorExtraInfo>
 
   Generator::Position curPos{-1};
 
-  base::string16 processStr = original_str;
+  base::string16 processStr = original_str_;
   if(processStr.empty()) {
     std::string error_details = "empty string as input";
     error_details += " (" __FILE__ ")";
@@ -301,7 +311,7 @@ outcome::result<std::string, GeneratorErrorExtraInfo>
         resultStr += cpp_codegen::CodeGenerator::
           appendToVariableAsRawText(
             std::string{base::UTF16ToUTF8(subStrRawText)},
-            kOutVarName);
+            output_var_name_);
       }
       pos += std::string{supported_tags().openTagStart}.size();
 
@@ -325,7 +335,7 @@ outcome::result<std::string, GeneratorErrorExtraInfo>
         resultStr += cpp_codegen::CodeGenerator::
           appendToVariableAsRawText(
             std::string{base::UTF16ToUTF8(subStrRawText)},
-            kOutVarName);
+            output_var_name_);
       }
       break;
     }
@@ -376,7 +386,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::handleTag(
     cb_result =
       tag.callback(resultStr,
         base::UTF16ToUTF8(closedTag.tagCode),
-        kOutVarName);
+        output_var_name_);
 
     return cb_result;
   }
@@ -391,7 +401,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::
 {
   PairTag found_tag;
 
-  if(const auto prefix
+  if(const std::string& prefix
       = tag_attr_with_closing(
           supported_tags().code_line.open_tag);
       base::StartsWith(str, base::ASCIIToUTF16(prefix),
@@ -399,7 +409,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::
     str = removePrefix( str, prefix, curPos );
     found_tag = supported_tags().code_line;
     return handleTag(str, found_tag, curPos, resultStr);
-  } else if(const auto prefix
+  } else if(const std::string& prefix
       = tag_attr_with_closing(
           supported_tags().code_block.open_tag);
       base::StartsWith(str, base::ASCIIToUTF16(prefix),
@@ -407,7 +417,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::
     str = removePrefix( str, prefix, curPos );
     found_tag = supported_tags().code_block;
     return handleTag(str, found_tag, curPos, resultStr);
-  } else if(const auto prefix
+  } else if(const std::string& prefix
       = tag_attr_with_closing(
           supported_tags().code_append_raw.open_tag);
       base::StartsWith(str, base::ASCIIToUTF16(prefix),
@@ -415,7 +425,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::
     str = removePrefix( str, prefix, curPos );
     found_tag = supported_tags().code_append_raw;
     return handleTag(str, found_tag, curPos, resultStr);
-  } else if(const auto prefix
+  } else if(const std::string& prefix
       = tag_attr_with_closing(
           supported_tags().code_append_as_string.open_tag);
       base::StartsWith(str, base::ASCIIToUTF16(prefix),
@@ -423,7 +433,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::
     str = removePrefix( str, prefix, curPos );
     found_tag = supported_tags().code_append_as_string;
     return handleTag(str, found_tag, curPos, resultStr);
-  } else if(const auto prefix
+  } else if(const std::string& prefix
       = tag_attr_with_closing(
           supported_tags().code_include.open_tag);
       base::StartsWith(str, base::ASCIIToUTF16(prefix),
@@ -440,7 +450,7 @@ outcome::result<void, GeneratorErrorExtraInfo> Generator::
   error_details += " (" __FILE__ ")";
   return GeneratorErrorExtraInfo{
     GeneratorError::UNCLOSED_TAG,
-    ErrorDetails::UnknownTag(original_str,
+    ErrorDetails::UnknownTag(original_str_,
       curPos, supported_tags())};
 }
 

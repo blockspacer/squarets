@@ -7,6 +7,7 @@
 #include "squarets/core/tags.hpp"
 #include "squarets/core/errors/errors.hpp"
 
+#include <base/logging.h>
 #include <base/strings/string_util.h>
 
 namespace squarets {
@@ -36,6 +37,10 @@ struct GeneratorTags {
 /// \brief used to generate C++ code from template
 class Generator {
  public:
+  Generator();
+
+  Generator(const std::string& output_var_name);
+
   struct Position {
     long int index;
   };
@@ -77,7 +82,11 @@ class Generator {
   GeneratorTags GeneratorTags_;
 
   ///\note used only for debug output
-  base::string16 original_str;
+  base::string16 original_str_;
+
+  std::string output_var_name_;
+
+  DISALLOW_COPY_AND_ASSIGN(Generator);
 };
 
 } // namespace core
