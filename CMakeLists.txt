@@ -227,11 +227,11 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/)
 set(squarets_include_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/squarets")
 set(squarets_src_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-include(cmake/PlatformChecks)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/PlatformChecks.cmake)
 
-include(cmake/CommonOptions)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/CommonOptions.cmake)
 
-include(cmake/ProjectFiles)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ProjectFiles.cmake)
 
 add_library(${LIB_NAME}-test-includes INTERFACE)
 
@@ -406,7 +406,7 @@ target_compile_definitions(${LIB_NAME} PUBLIC
 )
 
 # install and export steps
-include(cmake/Exports)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Exports.cmake)
 
 if(ENABLE_TESTS)
   add_subdirectory( tests )
