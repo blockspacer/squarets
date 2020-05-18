@@ -134,7 +134,7 @@ class squarets_conan_project(conan_build_helper.CMakePackage):
                        "scripts/*", "tools/*", "codegen/*", "assets/*",
                        "docs/*", "licenses/*", "patches/*", "resources/*",
                        "submodules/*", "thirdparty/*", "third-party/*",
-                       "third_party/*", "base/*", "build/*", "squarets/*")
+                       "third_party/*", "squarets/*")
 
     settings = "os", "compiler", "build_type", "arch"
 
@@ -246,7 +246,7 @@ class squarets_conan_project(conan_build_helper.CMakePackage):
         cmake.definitions["CONAN_AUTO_INSTALL"] = 'OFF'
 
         if self.options.shared:
-            cmake.definitions["BUILD_SHARED_LIBS"] = "ON"
+            cmake.definitions["squarets_BUILD_SHARED_LIBS"] = "ON"
 
         self.add_cmake_option(cmake, "ENABLE_TESTS", self._is_tests_enabled())
 
