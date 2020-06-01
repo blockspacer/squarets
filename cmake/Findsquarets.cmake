@@ -12,8 +12,26 @@ find_package(Cling)
 
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
-# uses Config.cmake or a -config.cmake file
-# see https://gitlab.kitware.com/cmake/community/wikis/doc/tutorials/How-to-create-a-ProjectConfig.cmake-file
-# BELOW MUST BE EQUAL TO find_package(... CONFIG REQUIRED)
-# NOTE: find_package(CONFIG) not supported with EMSCRIPTEN, so use include()
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/squarets-config.cmake)
+if(NOT TARGET CONAN_PKG::squarets)
+  message(FATAL_ERROR "Use squarets from conan")
+endif()
+set(squarets_LIB CONAN_PKG::squarets)
+# conan package has '/include' dir
+set(squarets_HEADER_DIR
+  ${CONAN_SQUARETS_ROOT}/include
+)
+if(squarets_LOCAL_BUILD)
+  # name of created target
+  set(squarets_LIB squarets)
+  # no '/include' dir on local build
+  set(squarets_HEADER_DIR
+    ${CONAN_SQUARETS_ROOT}
+  )
+else()
+  # uses Config.cmake or a -config.cmake file
+  # see https://gitlab.kitware.com/cmake/community/wikis/doc/tutorials/How-to-create-a-ProjectConfig.cmake-file
+  # BELOW MUST BE EQUAL TO find_package(... CONFIG REQUIRED)
+  # NOTE: find_package(CONFIG) not supported with EMSCRIPTEN, so use include()
+  include(${CMAKE_CURRENT_LIST_DIR}/cmake/squarets-config.cmake)
+endif(squarets_LOCAL_BUILD)
+message(STATUS "squarets_HEADER_DIR=${squarets_HEADER_DIR}")
