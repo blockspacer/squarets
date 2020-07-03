@@ -196,7 +196,7 @@ class squarets_conan_project(conan_build_helper.CMakePackage):
 
       self.requires("basis/master@conan/stable")
 
-      self.requires("corrade/2019.10@magnum/stable")
+      self.requires("corrade/2020.06@magnum/stable")
 
       self.requires("type_safe/0.2@conan/stable")
 
