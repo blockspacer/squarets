@@ -421,5 +421,5 @@ target_compile_definitions(${LIB_NAME} PUBLIC
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Exports.cmake)
 
 if(ENABLE_TESTS)
-  add_subdirectory( tests )
+  add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/tests )
 endif()
