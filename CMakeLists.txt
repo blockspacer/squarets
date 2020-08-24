@@ -13,11 +13,14 @@ set(LIB_NAME ${PROJECT_NAME})
 
 option(ENABLE_TESTS "Enable tests" OFF)
 
-# Hack to depend NOT on CONAN_PKG::libname, but on libname directly
-# See for details
-# https://docs.conan.io/en/latest/developing_packages/workspaces.html
-set(${PROJECT_NAME}_LOCAL_BUILD FALSE CACHE BOOL "${PROJECT_NAME}_LOCAL_BUILD")
-message(STATUS "${PROJECT_NAME}_LOCAL_BUILD=${${PROJECT_NAME}_LOCAL_BUILD}")
+# used by https://docs.conan.io/en/latest/developing_packages/workspaces.html
+get_filename_component(LOCAL_BUILD_ABSOLUTE_ROOT_PATH
+  "${PACKAGE_squarets_SRC}"
+  ABSOLUTE)
+if(EXISTS "${LOCAL_BUILD_ABSOLUTE_ROOT_PATH}")
+  # path to Find*.cmake file
+  list(PREPEND CMAKE_MODULE_PATH "${LOCAL_BUILD_ABSOLUTE_ROOT_PATH}/cmake")
+endif()
 
 set(${PROJECT_NAME}_BUILD_SHARED_LIBS
   FALSE CACHE BOOL
@@ -193,10 +196,8 @@ else()
 endif()
 
 find_package(chromium_base REQUIRED)
-if(TARGET chromium_base::chromium_base-static)
-  set(base_LIB chromium_base::chromium_base-static)
-else()
-  message(FATAL_ERROR "not supported: using system provided chromium_base library")
+if(NOT TARGET ${base_LIB})
+  message(FATAL_ERROR "not supported ${base_LIB}: using system provided chromium_base library")
 endif()
 
 # see https://doc.magnum.graphics/corrade/corrade-cmake.html#corrade-cmake-subproject
