@@ -22,6 +22,9 @@ GIT_SSL_NO_VERIFY=true \
           -o squarets:shared=False \
           -o squarets:enable_clang_from_conan=False \
           -e squarets:enable_tests=True
+
+# clean build cache
+conan remove "*" --build --force
 ```
 
 ## Development flow (for contributors)
