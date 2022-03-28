@@ -317,10 +317,10 @@ target_link_libraries(${LIB_NAME} INTERFACE
   ${USED_SYSTEM_LIBS}
 )
 
-set_property(TARGET ${LIB_NAME} PROPERTY CXX_STANDARD 17)
+#set_property(TARGET ${LIB_NAME} PROPERTY CXX_STANDARD 17)
 
 if(TARGET_EMSCRIPTEN)
-  # use PROPERTY CXX_STANDARD 17
+  # use PROPERTY compiler.cppstd
 else()
   target_compile_features(${LIB_NAME}
     PUBLIC cxx_auto_type
@@ -357,7 +357,7 @@ set_target_properties(${LIB_NAME}
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}" # TODO: /bin
     OUTPUT_NAME "${LIB_NAME}$<$<CONFIG:Debug>:${DEBUG_LIBRARY_SUFFIX}>"
     ENABLE_EXPORTS 1
-    CXX_STANDARD 17
+    #CXX_STANDARD 17
     CXX_EXTENSIONS OFF
     CMAKE_CXX_STANDARD_REQUIRED ON
 )
